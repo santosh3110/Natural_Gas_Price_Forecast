@@ -1,0 +1,25 @@
+forecast_horizon_days: 30
+
+prophet:
+  seasonality_mode: "multiplicative"
+  daily_seasonality: true
+  yearly_seasonality: true
+  weekly_seasonality: true
+  monthly_seasonality: true
+  changepoint_range: 0.95
+  changepoint_prior_scale: 0.2
+  Fourier_order: 5
+
+lstm:
+  time_step: 60
+  epochs: 300
+  batch_size: 64
+  learning_rate: 0.0048
+  layers: 2
+  units: 128
+  dropout: 0.13
+
+garch:
+  p: 1
+  q: 1
+  dist: "ged"

@@ -1,0 +1,56 @@
+# Core libraries
+pandas
+numpy
+datetime
+requests
+python-dotenv
+python-box
+
+# Plotting and visualization
+matplotlib
+seaborn
+plotly
+
+# Financial + Technical Analysis
+yfinance
+vectorbt
+pandas-ta
+
+# Time series forecasting
+prophet
+arch
+
+# Machine learning
+scikit-learn
+shap
+optuna
+
+# Deep learning
+tensorflow
+keras
+
+# MLflow (for experiment tracking)
+mlflow
+
+# Pruning support
+optuna
+optuna-integration
+
+# GunSan Strength (custom)
+gunsan-strength==0.1.0
+ 
+pyYAML
+
+tqdm
+
+ensure
+
+joblib
+
+types-PyYAML
+
+scipy
+
+Flask
+
+Flask-Cors

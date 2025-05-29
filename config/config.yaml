@@ -1,0 +1,43 @@
+artifacts_root: artifacts
+
+data_ingestion:
+  root_dir: artifacts/data_ingestion
+  yahoo_finance:
+    ticker: "NG=F"
+    start_date: "2009-01-01"
+    end_date: "2025-05-28"
+    data_file: artifacts/data_ingestion/yahoo_data.csv
+  eia_api:
+    api_key: ${EIA_API_KEY}
+    start_date: "2010-01-01"
+    end_date: "2025-05-28"
+    data_file: artifacts/data_ingestion/eia_inventory.csv
+  hdd_data:
+    year_start: 2010
+    base_url: "https://ftp.cpc.ncep.noaa.gov/htdocs/degree_days/weighted/daily_data"
+    local_raw_path: artifacts/data_ingestion/hdd_data.txt
+    processed_file: artifacts/data_ingestion/hdd_data.csv
+
+external_datasets:
+  hdd_processed_path: artifacts/external/hdd_data.csv
+  inventory_data_path: artifacts/external/inventory_data.csv
+
+prepare_data:
+  root_dir: artifacts/prepare_data
+  processed_data_path: artifacts/prepare_data/processed_data.csv
+
+baseline_model:
+  model_path: artifacts/models/prophet_model.pkl
+
+lstm_model:
+  model_path: artifacts/models/lstm_model.h5
+  checkpoint_path: artifacts/callbacks/model_checkpoint.h5
+  tensorboard_log_dir: artifacts/callbacks/tensorboard_logs
+
+forecast:
+  root_dir: artifacts/forecast
+  forecast_results_path: artifacts/forecast/forecast_results.csv
+
+logging:
+  log_file: artifacts/logs/project.log
+  level: INFO
