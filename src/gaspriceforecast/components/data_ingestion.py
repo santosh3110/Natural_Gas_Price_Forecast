@@ -22,12 +22,18 @@ class DataIngestion:
                 self.config.ticker,
                 start=self.config.start_date,
                 end=self.config.end_date,
+                multi_level_index=False,
                 progress=False
             )
             data.reset_index(inplace=True)
             data.to_csv(self.config.yahoo_data_file, index=False)
             logger.info(f"Yahoo data saved to: {self.config.yahoo_data_file}")
+            logger.info(f"Data shape: {data.shape}")
+            logger.info(f"Data columns:\n{data.dtypes}")
+            logger.info(f"Null values:\n{data.isnull().sum()}")
+            logger.info(f"Duplicated rows: {data.duplicated().sum()}")
             return data
+        
         except Exception as e:
             logger.error(f" Failed to download Yahoo Finance data: {e}")
             raise
@@ -59,6 +65,10 @@ class DataIngestion:
             full_df = pd.concat(dfs)
             full_df.to_csv(self.config.hdd_processed_file, index=False)
             logger.info(f"HDD data saved to: {self.config.hdd_processed_file}")
+            logger.info(f"HDD data shape: {full_df.shape}")
+            logger.info(f"HDD data columns:\n{full_df.dtypes}")
+            logger.info(f"HDD null values:\n{full_df.isnull().sum()}")
+            logger.info(f"HDD duplicated rows: {full_df.duplicated().sum()}")
             return full_df
         else:
             logger.error("No HDD data downloaded.")
@@ -95,6 +105,11 @@ class DataIngestion:
             df = df[["Date", "Inventory_Bcf"]].sort_values("Date")
             df.to_csv(self.config.eia_inventory_file, index=False)
             logger.info(f"EIA Inventory saved to: {self.config.eia_inventory_file}")
+            logger.info(f"Inventory data shape: {df.shape}")
+            logger.info(f"Inventory data columns:\n{df.dtypes}")
+            logger.info(f"Inventory null values:\n{df.isnull().sum()}")
+            logger.info(f"Inventory duplicated rows: {df.duplicated().sum()}")
+
             return df
 
         except Exception as e:

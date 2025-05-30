@@ -18,10 +18,6 @@ data_ingestion:
     local_raw_path: artifacts/data_ingestion/hdd_data.txt
     processed_file: artifacts/data_ingestion/hdd_data.csv
 
-external_datasets:
-  hdd_processed_path: artifacts/external/hdd_data.csv
-  inventory_data_path: artifacts/external/inventory_data.csv
-
 prepare_data:
   root_dir: artifacts/prepare_data
   processed_data_path: artifacts/prepare_data/processed_data.csv

@@ -21,14 +21,11 @@ class DataIngestionConfig:
 
 
 @dataclass
-class ExternalDatasetConfig:
-    hdd_processed_path: Path
-    inventory_data_path: Path
-
-
-@dataclass
 class PrepareDataConfig:
     root_dir: Path
+    yahoo_data_path: Path
+    hdd_path: Path
+    inventory_path: Path
     processed_data_path: Path
 
 

@@ -1,7 +1,7 @@
 from gaspriceforecast.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH, EIA_API_KEY
 from gaspriceforecast.utils.common import read_yaml, create_directories
 from gaspriceforecast.entity.config_entity import (
-    DataIngestionConfig, ExternalDatasetConfig, PrepareDataConfig,
+    DataIngestionConfig, PrepareDataConfig,
     BaselineModelConfig, LSTMModelConfig, ForecastConfig,
     LoggingConfig, ProphetHyperParams, LSTMHyperParams, GARCHHyperParams,
     HyperParametersConfig
@@ -37,19 +37,16 @@ class ConfigurationManager:
             hdd_processed_file=Path(config.hdd_data.processed_file),
             hdd_year_start=config.hdd_data.year_start
         )
-
-    def get_external_dataset_config(self) -> ExternalDatasetConfig:
-        config = self.config.external_datasets
-        return ExternalDatasetConfig(
-            hdd_processed_path=Path(config.hdd_processed_path),
-            inventory_data_path=Path(config.inventory_data_path)
-        )
-
+    
     def get_prepare_data_config(self) -> PrepareDataConfig:
         config = self.config.prepare_data
-        create_directories([config.root_dir])
+        data_config = self.config.data_ingestion
+
         return PrepareDataConfig(
             root_dir=Path(config.root_dir),
+            yahoo_data_path=Path(data_config.yahoo_finance.data_file),
+            hdd_path=Path(data_config.hdd_data.processed_file),
+            inventory_path=Path(data_config.eia_api.data_file),
             processed_data_path=Path(config.processed_data_path)
         )
 
