@@ -22,8 +22,14 @@ prepare_data:
   root_dir: artifacts/prepare_data
   processed_data_path: artifacts/prepare_data/processed_data.csv
 
-baseline_model:
-  model_path: artifacts/models/prophet_model.pkl
+prophet_baseline:
+  root_dir: artifacts/prophet_baseline
+  model_file: artifacts/prophet_baseline/model.pkl
+  forecast_file: artifacts/prophet_baseline/forecast.csv
+  forecast_plot: artifacts/prophet_baseline/forecast_plot.png
+  residual_plot: artifacts/prophet_baseline/residuals_plot.png
+  component_plot: artifacts/prophet_baseline/prophet_components.png
+  metrics_file: artifacts/prophet_baseline/prophet_metrics.json
 
 lstm_model:
   model_path: artifacts/models/lstm_model.h5

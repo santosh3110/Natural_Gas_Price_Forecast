@@ -30,8 +30,25 @@ class PrepareDataConfig:
 
 
 @dataclass
-class BaselineModelConfig:
-    model_path: Path
+class ProphetBaselineConfig:
+    root_dir: Path
+    model_file: Path
+    forecast_file: Path
+    forecast_plot: Path
+    residual_plot: Path
+    component_plot: Path
+    metrics_file: Path
+    horizon: int
+    seasonality_mode: str
+    daily_seasonality: bool
+    weekly_seasonality: bool
+    yearly_seasonality: bool
+    monthly_seasonality: bool
+    changepoint_prior_scale: float
+    changepoint_range: float
+    fourier_order: int
+    future_days: int
+
 
 
 @dataclass

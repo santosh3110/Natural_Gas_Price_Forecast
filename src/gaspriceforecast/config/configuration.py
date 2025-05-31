@@ -2,7 +2,7 @@ from gaspriceforecast.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH, EIA_A
 from gaspriceforecast.utils.common import read_yaml, create_directories
 from gaspriceforecast.entity.config_entity import (
     DataIngestionConfig, PrepareDataConfig,
-    BaselineModelConfig, LSTMModelConfig, ForecastConfig,
+    ProphetBaselineConfig, LSTMModelConfig, ForecastConfig,
     LoggingConfig, ProphetHyperParams, LSTMHyperParams, GARCHHyperParams,
     HyperParametersConfig
 )
@@ -50,11 +50,32 @@ class ConfigurationManager:
             processed_data_path=Path(config.processed_data_path)
         )
 
-    def get_baseline_model_config(self) -> BaselineModelConfig:
-        config = self.config.baseline_model
-        return BaselineModelConfig(
-            model_path=Path(config.model_path)
+    def get_prophet_baseline_config(self) -> ProphetBaselineConfig:
+        config = self.config.prophet_baseline
+        params = self.params.prophet_baseline
+
+        create_directories([config.root_dir])
+
+        return ProphetBaselineConfig(
+            root_dir=Path(config.root_dir),
+            model_file=Path(config.model_file),
+            forecast_file=Path(config.forecast_file),
+            forecast_plot=Path(config.forecast_plot),
+            residual_plot=Path(config.residual_plot),
+            component_plot=Path(config.component_plot),
+            metrics_file=Path(config.metrics_file),
+            horizon=params.horizon,
+            seasonality_mode=params.seasonality_mode,
+            daily_seasonality=params.daily_seasonality,
+            weekly_seasonality=params.weekly_seasonality,
+            yearly_seasonality=params.yearly_seasonality,
+            monthly_seasonality=params.monthly_seasonality,
+            changepoint_prior_scale=params.changepoint_prior_scale,
+            changepoint_range=params.changepoint_range,
+            fourier_order=params.fourier_order,
+            future_days=params.future_days
         )
+
 
     def get_lstm_model_config(self) -> LSTMModelConfig:
         config = self.config.lstm_model
