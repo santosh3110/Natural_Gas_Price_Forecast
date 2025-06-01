@@ -102,3 +102,4 @@ class ProphetBaseline:
         fig2 = model.plot_components(forecast)
         fig2.savefig(self.config.component_plot)
         logger.info(f"Prophet components plot saved to {self.config.component_plot}")
+

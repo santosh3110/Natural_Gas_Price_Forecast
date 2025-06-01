@@ -13,11 +13,14 @@ prophet_baseline:
 lstm:
   time_step: 60
   epochs: 300
-  batch_size: 64
-  learning_rate: 0.0048
-  layers: 2
+  batch_size: 32
+  learning_rate: 0.0018847896888368458
+  layers: 1
   units: 128
-  dropout: 0.13
+  dropout: 0.2107204924359533
+  patience: 25
+  test_size: 0.25
+
 
 garch:
   p: 1

@@ -32,9 +32,13 @@ prophet_baseline:
   metrics_file: artifacts/prophet_baseline/prophet_metrics.json
 
 lstm_model:
-  model_path: artifacts/models/lstm_model.h5
-  checkpoint_path: artifacts/callbacks/model_checkpoint.h5
-  tensorboard_log_dir: artifacts/callbacks/tensorboard_logs
+  root_dir: artifacts/lstm_model
+  processed_data_path: artifacts/prepare_data/processed_data.csv
+  model_path: artifacts/lstm_model/lstm_model.h5
+  scaler_path: artifacts/lstm_model/scaler.pkl
+  history_plot: artifacts/lstm_model/history.png
+  prediction_plot: artifacts/lstm_model/prediction.png
+  metrics_file: artifacts/lstm_model/metrics.json
 
 forecast:
   root_dir: artifacts/forecast

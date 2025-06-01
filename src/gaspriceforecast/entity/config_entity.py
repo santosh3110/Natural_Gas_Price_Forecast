@@ -49,20 +49,16 @@ class ProphetBaselineConfig:
     fourier_order: int
     future_days: int
 
-
-
 @dataclass
-class LSTMModelConfig:
-    model_path: Path
-    checkpoint_path: Path
-    tensorboard_log_dir: Path
-
-
-@dataclass
-class ForecastConfig:
+class LSTMConfig:
     root_dir: Path
-    forecast_results_path: Path
-
+    processed_data_path: Path
+    model_path: Path
+    history_plot: Path
+    prediction_plot: Path
+    metrics_file: Path
+    scaler_path: Path
+    params: dict
 
 @dataclass
 class LoggingConfig:
@@ -70,39 +66,27 @@ class LoggingConfig:
     log_file: Path
 
 
-@dataclass(frozen=True)
-class ProphetHyperParams:
-    seasonality_mode: str
-    daily_seasonality: bool
-    yearly_seasonality: bool
-    weekly_seasonality: bool
-    monthly_seasonality: bool
-    changepoint_range: float
-    changepoint_prior_scale: float
-    Fourier_order: int
+# @dataclass(frozen=True)
+# class LSTMHyperParams:
+#     time_step: int
+#     epochs: int
+#     batch_size: int
+#     learning_rate: float
+#     layers: int
+#     units: int
+#     dropout: float
 
 
-@dataclass(frozen=True)
-class LSTMHyperParams:
-    time_step: int
-    epochs: int
-    batch_size: int
-    learning_rate: float
-    layers: int
-    units: int
-    dropout: float
+# @dataclass(frozen=True)
+# class GARCHHyperParams:
+#     p: int
+#     q: int
+#     dist: str
 
 
-@dataclass(frozen=True)
-class GARCHHyperParams:
-    p: int
-    q: int
-    dist: str
-
-
-@dataclass(frozen=True)
-class HyperParametersConfig:
-    forecast_horizon_days: int
-    prophet: ProphetHyperParams
-    lstm: LSTMHyperParams
-    garch: GARCHHyperParams
+# @dataclass(frozen=True)
+# class HyperParametersConfig:
+#     forecast_horizon_days: int
+#     prophet: ProphetHyperParams
+#     lstm: LSTMHyperParams
+#     garch: GARCHHyperParams

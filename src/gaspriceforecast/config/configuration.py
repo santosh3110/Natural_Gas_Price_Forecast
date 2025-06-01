@@ -2,9 +2,7 @@ from gaspriceforecast.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH, EIA_A
 from gaspriceforecast.utils.common import read_yaml, create_directories
 from gaspriceforecast.entity.config_entity import (
     DataIngestionConfig, PrepareDataConfig,
-    ProphetBaselineConfig, LSTMModelConfig, ForecastConfig,
-    LoggingConfig, ProphetHyperParams, LSTMHyperParams, GARCHHyperParams,
-    HyperParametersConfig
+    ProphetBaselineConfig, LSTMConfig, LoggingConfig
 )
 from pathlib import Path
 
@@ -77,21 +75,31 @@ class ConfigurationManager:
         )
 
 
-    def get_lstm_model_config(self) -> LSTMModelConfig:
+    def get_lstm_model_config(self) -> LSTMConfig:
         config = self.config.lstm_model
-        return LSTMModelConfig(
-            model_path=Path(config.model_path),
-            checkpoint_path=Path(config.checkpoint_path),
-            tensorboard_log_dir=Path(config.tensorboard_log_dir)
+        params = self.params.lstm
+
+        create_directories([config.root_dir])
+
+        return LSTMConfig(
+            root_dir=config.root_dir,
+            processed_data_path=config.processed_data_path,
+            model_path=config.model_path,
+            history_plot=config.history_plot,
+            prediction_plot=config.prediction_plot,
+            metrics_file=config.metrics_file,
+            scaler_path=config.scaler_path,
+            params=params
         )
 
-    def get_forecast_config(self) -> ForecastConfig:
-        config = self.config.forecast
-        create_directories([config.root_dir])
-        return ForecastConfig(
-            root_dir=Path(config.root_dir),
-            forecast_results_path=Path(config.forecast_results_path)
-        )
+
+    # def get_forecast_config(self) -> ForecastConfig:
+    #     config = self.config.forecast
+    #     create_directories([config.root_dir])
+    #     return ForecastConfig(
+    #         root_dir=Path(config.root_dir),
+    #         forecast_results_path=Path(config.forecast_results_path)
+    #     )
 
     def get_logging_config(self) -> LoggingConfig:
         config = self.config.logging
@@ -100,33 +108,33 @@ class ConfigurationManager:
             level=config.level
         )
 
-    def get_hyperparams_config(self) -> HyperParametersConfig:
-        p = self.params
+    # def get_hyperparams_config(self) -> HyperParametersConfig:
+    #     p = self.params
 
-        return HyperParametersConfig(
-            forecast_horizon_days=p.forecast_horizon_days,
-            prophet=ProphetHyperParams(
-                seasonality_mode=p.prophet.seasonality_mode,
-                daily_seasonality=p.prophet.daily_seasonality,
-                yearly_seasonality=p.prophet.yearly_seasonality,
-                weekly_seasonality=p.prophet.weekly_seasonality,
-                monthly_seasonality=p.prophet.monthly_seasonality,
-                changepoint_range=p.prophet.changepoint_range,
-                changepoint_prior_scale=p.prophet.changepoint_prior_scale,
-                Fourier_order=p.prophet.Fourier_order
-            ),
-            lstm=LSTMHyperParams(
-                time_step=p.lstm.time_step,
-                epochs=p.lstm.epochs,
-                batch_size=p.lstm.batch_size,
-                learning_rate=p.lstm.learning_rate,
-                layers=p.lstm.layers,
-                units=p.lstm.units,
-                dropout=p.lstm.dropout
-            ),
-            garch=GARCHHyperParams(
-                p=p.garch.p,
-                q=p.garch.q,
-                dist=p.garch.dist
-            )
-        )
+    #     return HyperParametersConfig(
+    #         forecast_horizon_days=p.forecast_horizon_days,
+    #         prophet=ProphetHyperParams(
+    #             seasonality_mode=p.prophet.seasonality_mode,
+    #             daily_seasonality=p.prophet.daily_seasonality,
+    #             yearly_seasonality=p.prophet.yearly_seasonality,
+    #             weekly_seasonality=p.prophet.weekly_seasonality,
+    #             monthly_seasonality=p.prophet.monthly_seasonality,
+    #             changepoint_range=p.prophet.changepoint_range,
+    #             changepoint_prior_scale=p.prophet.changepoint_prior_scale,
+    #             Fourier_order=p.prophet.Fourier_order
+    #         ),
+    #         lstm=LSTMHyperParams(
+    #             time_step=p.lstm.time_step,
+    #             epochs=p.lstm.epochs,
+    #             batch_size=p.lstm.batch_size,
+    #             learning_rate=p.lstm.learning_rate,
+    #             layers=p.lstm.layers,
+    #             units=p.lstm.units,
+    #             dropout=p.lstm.dropout
+    #         ),
+    #         garch=GARCHHyperParams(
+    #             p=p.garch.p,
+    #             q=p.garch.q,
+    #             dist=p.garch.dist
+    #         )
+    #     )
