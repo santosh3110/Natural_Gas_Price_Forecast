@@ -7,20 +7,20 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dropout, Dense
+from tensorflow.keras.layers import LSTM, Dropout, Dense, Bidirectional
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 from sklearn.model_selection import train_test_split
 
-from gaspriceforecast.entity.config_entity import LSTMConfig
+from gaspriceforecast.entity.config_entity import BiLSTMConfig
 from gaspriceforecast.utils.logger import get_logger
 
-logger = get_logger("lstm_model.log")
+logger = get_logger("bilstm_model.log")
 
 
-class LSTMTrainer:
-    def __init__(self, config: LSTMConfig):
+class BiLSTMTrainer:
+    def __init__(self, config: BiLSTMConfig):
         self.config = config
 
     def load_data(self):
@@ -62,7 +62,6 @@ class LSTMTrainer:
         y_train_scaled = target_scaler.fit_transform(y_train)
         y_test_scaled = target_scaler.transform(y_test)
 
-        # Save scalers
         joblib.dump(feature_scaler, self.config.scaler_path.replace(".pkl", "_feature.pkl"))
         joblib.dump(target_scaler, self.config.scaler_path)
 
@@ -76,13 +75,12 @@ class LSTMTrainer:
         return np.array(X_seq), np.array(y_seq)
 
     def build_model(self, input_shape, params):
+        logger.info("Building BiLSTM model...")
         model = Sequential()
         for i in range(params['layers']):
             return_seq = i < params['layers'] - 1
-            if i == 0:
-                model.add(LSTM(params['units'], return_sequences=return_seq, input_shape=input_shape))
-            else:
-                model.add(LSTM(params['units'], return_sequences=return_seq))
+            layer = Bidirectional(LSTM(params['units'], return_sequences=return_seq), merge_mode='concat')
+            model.add(layer)
             model.add(Dropout(params['dropout']))
         model.add(Dense(1))
         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=params['learning_rate']),
@@ -91,11 +89,8 @@ class LSTMTrainer:
 
     def train(self):
         df = self.load_data()
-
         test_size = self.config.params.get("test_size", 0.25)
         df_train, df_test = train_test_split(df, test_size=test_size, shuffle=False, random_state=42)
-        print(f'Train Data:\n {df_train.head()}')
-        print(f'Test Data:\n {df_test.head()}')
 
         X_train, X_test, y_train, y_test, target_scaler = self.scale_data(df_train, df_test)
 
@@ -103,12 +98,12 @@ class LSTMTrainer:
         X_train_seq, y_train_seq = self.split_sequences(X_train, y_train, time_step)
         X_test_seq, y_test_seq = self.split_sequences(X_test, y_test, time_step)
 
-        logger.info(f"Training LSTM model with shape {X_train_seq.shape}")
         model = self.build_model((X_train_seq.shape[1], X_train_seq.shape[2]), self.config.params)
 
         early_stop = EarlyStopping(monitor="val_loss", patience=self.config.params["patience"], restore_best_weights=True)
         reduce_lr = ReduceLROnPlateau(monitor="val_loss", factor=0.3, patience=10, min_lr=1e-6)
 
+        logger.info("Training BiLSTM model...")
         history = model.fit(
             X_train_seq, y_train_seq,
             validation_data=(X_test_seq, y_test_seq),
@@ -118,28 +113,28 @@ class LSTMTrainer:
             verbose=1
         )
 
-        logger.info("Saving model...")
         model.save(self.config.model_path)
+        logger.info(f"Model saved at: {self.config.model_path}")
 
-        # Plot training history
+        # Training curve
         plt.plot(history.history["loss"], label="Train Loss")
         plt.plot(history.history["val_loss"], label="Val Loss")
+        plt.title("BiLSTM Loss Curve")
         plt.legend()
-        plt.title("LSTM Loss Curve")
+        plt.tight_layout()
         plt.savefig(self.config.history_plot)
         plt.close()
         logger.info(f"Loss plot saved at: {self.config.history_plot}")
 
-        # Predict and evaluate
+        # Forecast
         y_pred = model.predict(X_test_seq)
         y_pred_inv = target_scaler.inverse_transform(y_pred)
         y_test_inv = target_scaler.inverse_transform(y_test_seq)
 
-        # Forecast plot
         plt.figure(figsize=(14, 6))
         plt.plot(y_test_inv, label="Actual")
         plt.plot(y_pred_inv, label="Predicted")
-        plt.title("LSTM Forecast vs Actual")
+        plt.title("BiLSTM Forecast vs Actual")
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
@@ -155,8 +150,9 @@ class LSTMTrainer:
         metrics = {"RMSE": rmse, "MAE": mae, "MAPE": mape}
         with open(self.config.metrics_file, "w") as f:
             json.dump(metrics, f, indent=4)
-        logger.info(f"LSTM Metrics: {metrics}")
+        logger.info(f"BiLSTM Metrics: {metrics}")
         logger.info(f"Metrics saved at: {self.config.metrics_file}")
 
     def run(self):
         self.train()
+        

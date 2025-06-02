@@ -40,6 +40,23 @@ lstm_model:
   prediction_plot: artifacts/lstm_model/prediction.png
   metrics_file: artifacts/lstm_model/metrics.json
 
+bilstm_model:
+  root_dir: artifacts/bilstm_model
+  processed_data_path: artifacts/prepare_data/processed_data.csv
+  model_path: artifacts/bilstm_model/bilstm_model.h5
+  history_plot: artifacts/bilstm_model/history.png
+  prediction_plot: artifacts/bilstm_model/prediction.png
+  metrics_file: artifacts/bilstm_model/metrics.json
+  scaler_path: artifacts/bilstm_model/scaler.pkl
+
+model_evaluation:
+  root_dir: artifacts/model_evaluation
+  lstm_metrics_path: artifacts/lstm_model/metrics.json
+  bilstm_model_metrics_path: artifacts/bilstm_model/metrics.json 
+  prophet_metrics_path: artifacts/prophet_baseline/prophet_metrics.json
+  evaluation_report: artifacts/model_evaluation/evaluation_report.json
+  evaluation_plot: artifacts/model_evaluation/model_comparison.png
+
 forecast:
   root_dir: artifacts/forecast
   forecast_results_path: artifacts/forecast/forecast_results.csv

@@ -2,7 +2,8 @@ from gaspriceforecast.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH, EIA_A
 from gaspriceforecast.utils.common import read_yaml, create_directories
 from gaspriceforecast.entity.config_entity import (
     DataIngestionConfig, PrepareDataConfig,
-    ProphetBaselineConfig, LSTMConfig, LoggingConfig
+    ProphetBaselineConfig, LSTMConfig, BiLSTMConfig,
+    LoggingConfig, ModelEvaluationConfig
 )
 from pathlib import Path
 
@@ -91,15 +92,38 @@ class ConfigurationManager:
             scaler_path=config.scaler_path,
             params=params
         )
+    
+    
+    def get_bilstm_model_config(self) -> BiLSTMConfig:
+        config = self.config.bilstm_model
+        params = self.params.BiLSTM_model
 
+        # Create directory from the path object directly
+        create_directories([config.root_dir])
 
-    # def get_forecast_config(self) -> ForecastConfig:
-    #     config = self.config.forecast
-    #     create_directories([config.root_dir])
-    #     return ForecastConfig(
-    #         root_dir=Path(config.root_dir),
-    #         forecast_results_path=Path(config.forecast_results_path)
-    #     )
+        return BiLSTMConfig(
+            root_dir=config.root_dir,
+            processed_data_path=config.processed_data_path,
+            model_path=config.model_path,
+            history_plot=config.history_plot,
+            prediction_plot=config.prediction_plot,
+            metrics_file=config.metrics_file,
+            scaler_path=config.scaler_path,
+            params=params
+        )
+
+  
+    def get_model_evaluation_config(self) -> ModelEvaluationConfig:
+        eval_cfg = self.config.model_evaluation
+
+        return ModelEvaluationConfig(
+            root_dir=Path(eval_cfg.root_dir),
+            lstm_metrics_path=Path(eval_cfg.lstm_metrics_path),
+            bilstm_model_metrics_path=(eval_cfg.bilstm_model_metrics_path),
+            prophet_metrics_path=Path(eval_cfg.prophet_metrics_path),
+            evaluation_report=Path(eval_cfg.evaluation_report),
+            evaluation_plot=Path(eval_cfg.evaluation_plot)
+        )
 
     def get_logging_config(self) -> LoggingConfig:
         config = self.config.logging
@@ -107,34 +131,3 @@ class ConfigurationManager:
             log_file=Path(config.log_file),
             level=config.level
         )
-
-    # def get_hyperparams_config(self) -> HyperParametersConfig:
-    #     p = self.params
-
-    #     return HyperParametersConfig(
-    #         forecast_horizon_days=p.forecast_horizon_days,
-    #         prophet=ProphetHyperParams(
-    #             seasonality_mode=p.prophet.seasonality_mode,
-    #             daily_seasonality=p.prophet.daily_seasonality,
-    #             yearly_seasonality=p.prophet.yearly_seasonality,
-    #             weekly_seasonality=p.prophet.weekly_seasonality,
-    #             monthly_seasonality=p.prophet.monthly_seasonality,
-    #             changepoint_range=p.prophet.changepoint_range,
-    #             changepoint_prior_scale=p.prophet.changepoint_prior_scale,
-    #             Fourier_order=p.prophet.Fourier_order
-    #         ),
-    #         lstm=LSTMHyperParams(
-    #             time_step=p.lstm.time_step,
-    #             epochs=p.lstm.epochs,
-    #             batch_size=p.lstm.batch_size,
-    #             learning_rate=p.lstm.learning_rate,
-    #             layers=p.lstm.layers,
-    #             units=p.lstm.units,
-    #             dropout=p.lstm.dropout
-    #         ),
-    #         garch=GARCHHyperParams(
-    #             p=p.garch.p,
-    #             q=p.garch.q,
-    #             dist=p.garch.dist
-    #         )
-    #     )

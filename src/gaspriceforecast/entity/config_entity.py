@@ -61,32 +61,26 @@ class LSTMConfig:
     params: dict
 
 @dataclass
+class BiLSTMConfig:
+    root_dir: Path
+    processed_data_path: Path
+    model_path: Path
+    history_plot: Path
+    prediction_plot: Path
+    metrics_file: Path
+    scaler_path: Path
+    params: dict
+
+@dataclass
+class ModelEvaluationConfig:
+    root_dir: Path
+    lstm_metrics_path: Path
+    bilstm_model_metrics_path: Path
+    prophet_metrics_path: Path
+    evaluation_report: Path
+    evaluation_plot: Path
+
+@dataclass
 class LoggingConfig:
     level: str
     log_file: Path
-
-
-# @dataclass(frozen=True)
-# class LSTMHyperParams:
-#     time_step: int
-#     epochs: int
-#     batch_size: int
-#     learning_rate: float
-#     layers: int
-#     units: int
-#     dropout: float
-
-
-# @dataclass(frozen=True)
-# class GARCHHyperParams:
-#     p: int
-#     q: int
-#     dist: str
-
-
-# @dataclass(frozen=True)
-# class HyperParametersConfig:
-#     forecast_horizon_days: int
-#     prophet: ProphetHyperParams
-#     lstm: LSTMHyperParams
-#     garch: GARCHHyperParams

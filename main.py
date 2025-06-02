@@ -2,6 +2,8 @@ from gaspriceforecast.pipeline.stage_00_data_ingestion import DataIngestionTrain
 from gaspriceforecast.pipeline.stage_01_data_preparation import PrepareDataTrainingPipeline
 from gaspriceforecast.pipeline.stage_02_prophet_baseline import ProphetBaselinePipeline
 from gaspriceforecast.pipeline.stage_03_lstm_model import LSTMModelPipeline
+from gaspriceforecast.pipeline.stage_04_bilstm_model import BiLSTMPipeline
+from gaspriceforecast.pipeline.stage_05_model_evaluation import ModelEvaluationPipeline
 from gaspriceforecast.utils.logger import get_logger
 
 logger = get_logger(log_file="main_pipeline.log")
@@ -48,3 +50,24 @@ if __name__ == "__main__":
     except Exception as e:
         logger.exception(e)
         raise e
+    
+    STAGE_NAME = "BiLSTM Model"
+    try:
+        logger.info(f"\n\n>>>>> stage {STAGE_NAME} started <<<<<\n")
+        bilstm_pipeline = BiLSTMPipeline()
+        bilstm_pipeline.main()
+        logger.info(f"\n\n>>>>> stage {STAGE_NAME} completed <<<<<\n")
+    except Exception as e:
+        logger.exception(e)
+        raise e
+
+    STAGE_NAME = "Model Evaluation"
+    try:
+        logger.info(f"\n\n>>>>> stage {STAGE_NAME} started <<<<<\n")
+        eval_pipeline = ModelEvaluationPipeline()
+        eval_pipeline.main()
+        logger.info(f"\n\n>>>>> stage {STAGE_NAME} completed <<<<<\n")
+    except Exception as e:
+        logger.exception(e)
+        raise e
+

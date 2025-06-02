@@ -14,13 +14,23 @@ lstm:
   time_step: 60
   epochs: 300
   batch_size: 32
-  learning_rate: 0.0018847896888368458
+  learning_rate: 0.004236738510183372
   layers: 1
   units: 128
-  dropout: 0.2107204924359533
+  dropout: 0.2937143644669184
   patience: 25
   test_size: 0.25
 
+BiLSTM_model:
+  layers: 1
+  units: 128
+  dropout: 0.474381420780048
+  learning_rate: 0.005563285496088541
+  batch_size: 32
+  epochs: 300
+  time_step: 60
+  patience: 25
+  test_size: 0.25
 
 garch:
   p: 1
