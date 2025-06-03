@@ -81,6 +81,13 @@ class ModelEvaluationConfig:
     evaluation_plot: Path
 
 @dataclass
+class FutureFeatureEngineeringConfig:
+    root_dir: Path
+    processed_data_path: Path
+    output_path: Path
+    params: dict
+
+@dataclass
 class LoggingConfig:
     level: str
     log_file: Path

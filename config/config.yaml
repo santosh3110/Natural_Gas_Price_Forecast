@@ -57,6 +57,11 @@ model_evaluation:
   evaluation_report: artifacts/model_evaluation/evaluation_report.json
   evaluation_plot: artifacts/model_evaluation/model_comparison.png
 
+future_feature_engineering:
+  root_dir: artifacts/future_feature_engineering
+  processed_data_path: artifacts/prepare_data/processed_data.csv
+  output_path: artifacts/future_feature_engineering/future_features.csv
+
 forecast:
   root_dir: artifacts/forecast
   forecast_results_path: artifacts/forecast/forecast_results.csv

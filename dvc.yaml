@@ -1,0 +1,75 @@
+stages:
+  data_ingestion:
+    cmd: python src/gaspriceforecast/pipeline/stage_00_data_ingestion.py
+    deps:
+      - src/gaspriceforecast/pipeline/stage_00_data_ingestion.py
+      - src/gaspriceforecast/components/data_ingestion.py
+      - config/config.yaml
+    outs:
+      - artifacts/data_ingestion
+
+  data_preparation:
+    cmd: python src/gaspriceforecast/pipeline/stage_01_data_preparation.py
+    deps:
+      - src/gaspriceforecast/pipeline/stage_01_data_preparation.py
+      - src/gaspriceforecast/components/data_preparation.py
+      - config/config.yaml
+      - artifacts/data_ingestion
+    outs:
+      - artifacts/prepare_data
+
+  prophet_baseline:
+    cmd: python src/gaspriceforecast/pipeline/stage_02_prophet_baseline.py
+    deps:
+      - src/gaspriceforecast/pipeline/stage_02_prophet_baseline.py
+      - src/gaspriceforecast/components/prophet_baseline.py
+      - config/config.yaml
+      - params.yaml
+      - artifacts/prepare_data
+    outs:
+      - artifacts/prophet_baseline
+
+  lstm_model:
+    cmd: python src/gaspriceforecast/pipeline/stage_03_lstm_model.py
+    deps:
+      - src/gaspriceforecast/pipeline/stage_03_lstm_model.py
+      - src/gaspriceforecast/components/lstm_model.py
+      - config/config.yaml
+      - params.yaml
+      - artifacts/prepare_data
+    outs:
+      - artifacts/lstm_model
+
+  bilstm_model:
+    cmd: python src/gaspriceforecast/pipeline/stage_04_bilstm_model.py
+    deps:
+      - src/gaspriceforecast/pipeline/stage_04_bilstm_model.py
+      - src/gaspriceforecast/components/bilstm_model.py
+      - config/config.yaml
+      - params.yaml
+      - artifacts/prepare_data
+    outs:
+      - artifacts/bilstm_model
+
+  model_evaluation:
+    cmd: python src/gaspriceforecast/pipeline/stage_05_model_evaluation.py
+    deps:
+      - src/gaspriceforecast/pipeline/stage_05_model_evaluation.py
+      - src/gaspriceforecast/components/mlflow_model_evaluation.py
+      - config/config.yaml
+      - artifacts/lstm_model/metrics.json
+      - artifacts/bilstm_model/metrics.json
+      - artifacts/prophet_baseline/prophet_metrics.json
+    outs:
+      - artifacts/model_evaluation
+
+  future_feature_engineering:
+    cmd: python src/gaspriceforecast/pipeline/stage_06_future_feature_engineering.py
+    deps:
+      - src/gaspriceforecast/pipeline/stage_06_future_feature_engineering.py
+      - src/gaspriceforecast/components/future_feature_engineering.py
+      - config/config.yaml
+      - params.yaml
+      - artifacts/prepare_data/processed_data.csv
+    outs:
+      - artifacts/future_feature_engineering/future_features.csv

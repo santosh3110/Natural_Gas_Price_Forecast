@@ -3,7 +3,7 @@ from gaspriceforecast.utils.common import read_yaml, create_directories
 from gaspriceforecast.entity.config_entity import (
     DataIngestionConfig, PrepareDataConfig,
     ProphetBaselineConfig, LSTMConfig, BiLSTMConfig,
-    LoggingConfig, ModelEvaluationConfig
+    LoggingConfig, ModelEvaluationConfig, FutureFeatureEngineeringConfig
 )
 from pathlib import Path
 
@@ -123,6 +123,19 @@ class ConfigurationManager:
             prophet_metrics_path=Path(eval_cfg.prophet_metrics_path),
             evaluation_report=Path(eval_cfg.evaluation_report),
             evaluation_plot=Path(eval_cfg.evaluation_plot)
+        )
+    
+    def get_future_feature_engineering_config(self) -> FutureFeatureEngineeringConfig:
+        config = self.config.future_feature_engineering
+        params = self.params.future_feature_engineering
+
+        create_directories([config.root_dir])
+
+        return FutureFeatureEngineeringConfig(
+            root_dir=config.root_dir,
+            processed_data_path=config.processed_data_path,
+            output_path=config.output_path,
+            params=params
         )
 
     def get_logging_config(self) -> LoggingConfig:

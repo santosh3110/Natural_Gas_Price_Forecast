@@ -32,7 +32,23 @@ BiLSTM_model:
   patience: 25
   test_size: 0.25
 
-garch:
-  p: 1
-  q: 1
-  dist: "ged"
+future_feature_engineering:
+  forecast_horizon: 30
+  rolling_signal_window: 252
+  lag_inventory: 3
+  rolling_window: 30
+
+  prophet_params:
+    seasonality_mode: "multiplicative"
+    daily_seasonality: true
+    weekly_seasonality: true
+    yearly_seasonality: true
+    changepoint_prior_scale: 0.2
+    changepoint_range: 0.95
+    monthly_fourier_order: 5
+
+  garch_params:
+    vol: "GARCH"
+    p: 1
+    q: 1
+    dist: "ged"
