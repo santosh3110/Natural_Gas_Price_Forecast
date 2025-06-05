@@ -5,6 +5,8 @@ from gaspriceforecast.pipeline.stage_03_lstm_model import LSTMModelPipeline
 from gaspriceforecast.pipeline.stage_04_bilstm_model import BiLSTMPipeline
 from gaspriceforecast.pipeline.stage_05_model_evaluation import ModelEvaluationPipeline
 from gaspriceforecast.pipeline.stage_06_future_feature_engineering import FutureFeatureEngineeringPipeline
+from gaspriceforecast.pipeline.stage_07_forecast_with_lstm import ForecastWithLSTMPipeline
+from gaspriceforecast.pipeline.stage_08_forecast_with_bilstm import ForecastWithBiLSTMPipeline
 from gaspriceforecast.utils.logger import get_logger
 
 logger = get_logger(log_file="main_pipeline.log")
@@ -77,6 +79,26 @@ if __name__ == "__main__":
         logger.info(f"\n\n>>>>> stage {STAGE_NAME} started <<<<<\n")
         future_feat_pipeline = FutureFeatureEngineeringPipeline()
         future_feat_pipeline.main()
+        logger.info(f"\n\n>>>>> stage {STAGE_NAME} completed <<<<<\n")
+    except Exception as e:
+        logger.exception(e)
+        raise e
+    
+    STAGE_NAME = "Forecast with LSTM"
+    try:
+        logger.info(f"\n\n>>>>> stage {STAGE_NAME} started <<<<<\n")
+        lstm_forecast_pipeline = ForecastWithLSTMPipeline()
+        lstm_forecast_pipeline.main()
+        logger.info(f"\n\n>>>>> stage {STAGE_NAME} completed <<<<<\n")
+    except Exception as e:
+        logger.exception(e)
+        raise e
+    
+    STAGE_NAME = "Forecast with BiLSTM"
+    try:
+        logger.info(f"\n\n>>>>> stage {STAGE_NAME} started <<<<<\n")
+        lstm_forecast_pipeline = ForecastWithBiLSTMPipeline()
+        lstm_forecast_pipeline.main()
         logger.info(f"\n\n>>>>> stage {STAGE_NAME} completed <<<<<\n")
     except Exception as e:
         logger.exception(e)

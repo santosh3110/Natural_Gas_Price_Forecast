@@ -5,12 +5,12 @@ data_ingestion:
   yahoo_finance:
     ticker: "NG=F"
     start_date: "2009-01-01"
-    end_date: "2025-05-28"
+    end_date: "2025-06-04"
     data_file: artifacts/data_ingestion/yahoo_data.csv
   eia_api:
     api_key: ${EIA_API_KEY}
     start_date: "2010-01-01"
-    end_date: "2025-05-28"
+    end_date: "2025-06-04"
     data_file: artifacts/data_ingestion/eia_inventory.csv
   hdd_data:
     year_start: 2010
@@ -60,11 +60,28 @@ model_evaluation:
 future_feature_engineering:
   root_dir: artifacts/future_feature_engineering
   processed_data_path: artifacts/prepare_data/processed_data.csv
+  last_known_data_path: artifacts/future_feature_engineering/last_known.csv
   output_path: artifacts/future_feature_engineering/future_features.csv
 
-forecast:
-  root_dir: artifacts/forecast
-  forecast_results_path: artifacts/forecast/forecast_results.csv
+forecast_with_lstm:
+  model_path: artifacts/lstm_model/lstm_model.h5
+  feature_scaler_path: artifacts/lstm_model/scaler_feature.pkl
+  target_scaler_path: artifacts/lstm_model/scaler.pkl
+  future_feature_path: artifacts/future_feature_engineering/future_features.csv
+  last_known_data_path: artifacts/future_feature_engineering/last_known.csv
+  processed_data_path: artifacts/prepare_data/processed_data.csv
+  forecast_plot_path: artifacts/forecast_with_lstm/forecast_plot.png
+  output_forecast_path: artifacts/forecast_with_lstm/forecasted_prices.csv
+
+forecast_with_bilstm:
+  model_path: artifacts/bilstm_model/bilstm_model.h5
+  feature_scaler_path: artifacts/bilstm_model/scaler_feature.pkl
+  target_scaler_path: artifacts/bilstm_model/scaler.pkl
+  future_feature_path: artifacts/future_feature_engineering/future_features.csv
+  last_known_data_path: artifacts/future_feature_engineering/last_known.csv
+  processed_data_path: artifacts/prepare_data/processed_data.csv
+  forecast_plot_path: artifacts/forecast_with_bilstm/forecast_plot.png
+  output_forecast_path: artifacts/forecast_with_bilstm/forecasted_prices.csv
 
 logging:
   log_file: artifacts/logs/project.log

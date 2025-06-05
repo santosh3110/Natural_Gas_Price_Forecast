@@ -5,8 +5,8 @@ stages:
     deps:
     - path: config/config.yaml
       hash: md5
-      md5: 8a9f485efb0f3ea3045deda4eca704db
-      size: 2664
+      md5: 29ed721350a6f946be53f07f330b2e9e
+      size: 3751
     - path: src/gaspriceforecast/components/data_ingestion.py
       hash: md5
       md5: 1291d5ebc850bcb5566cee2b22e07186
@@ -18,21 +18,21 @@ stages:
     outs:
     - path: artifacts/data_ingestion
       hash: md5
-      md5: b8ed663fd09e090739f4ad0d8b5d3441.dir
-      size: 464267
+      md5: dd946511263fb5b4cd7615dda3171eba.dir
+      size: 464743
       nfiles: 3
   data_preparation:
     cmd: python src/gaspriceforecast/pipeline/stage_01_data_preparation.py
     deps:
     - path: artifacts/data_ingestion
       hash: md5
-      md5: b8ed663fd09e090739f4ad0d8b5d3441.dir
-      size: 464267
+      md5: dd946511263fb5b4cd7615dda3171eba.dir
+      size: 464743
       nfiles: 3
     - path: config/config.yaml
       hash: md5
-      md5: 8a9f485efb0f3ea3045deda4eca704db
-      size: 2664
+      md5: 29ed721350a6f946be53f07f330b2e9e
+      size: 3751
     - path: src/gaspriceforecast/components/data_preparation.py
       hash: md5
       md5: d97ee993f02331145db1513fc9d63554
@@ -44,29 +44,29 @@ stages:
     outs:
     - path: artifacts/prepare_data
       hash: md5
-      md5: 30530a8e15d411a18b581fffd87bcbbf.dir
-      size: 809549
+      md5: 854c791d9e94bef7a41c4824d34d3422.dir
+      size: 810616
       nfiles: 1
   prophet_baseline:
     cmd: python src/gaspriceforecast/pipeline/stage_02_prophet_baseline.py
     deps:
     - path: artifacts/prepare_data
       hash: md5
-      md5: 30530a8e15d411a18b581fffd87bcbbf.dir
-      size: 809549
+      md5: 854c791d9e94bef7a41c4824d34d3422.dir
+      size: 810616
       nfiles: 1
     - path: config/config.yaml
       hash: md5
-      md5: 8a9f485efb0f3ea3045deda4eca704db
-      size: 2664
+      md5: 29ed721350a6f946be53f07f330b2e9e
+      size: 3751
     - path: params.yaml
       hash: md5
-      md5: a65da601cf93557c269a660fce424d43
-      size: 1061
+      md5: 6cca5e21b4d6f2c602bae61dda0b5921
+      size: 1132
     - path: src/gaspriceforecast/components/prophet_baseline.py
       hash: md5
-      md5: 08d9e9510f2bec143b9635e206b14988
-      size: 4151
+      md5: 5e1e445968b976f546968cc67288835c
+      size: 5610
     - path: src/gaspriceforecast/pipeline/stage_02_prophet_baseline.py
       hash: md5
       md5: 4760e60dc86f8b068cd6fd1ac91f9754
@@ -74,29 +74,29 @@ stages:
     outs:
     - path: artifacts/prophet_baseline
       hash: md5
-      md5: a6e425fbff8919e3b92171c508e24f9d.dir
-      size: 651425
+      md5: 60c24483520acc4b9ab6ce73d55dff51.dir
+      size: 650795
       nfiles: 6
   lstm_model:
     cmd: python src/gaspriceforecast/pipeline/stage_03_lstm_model.py
     deps:
     - path: artifacts/prepare_data
       hash: md5
-      md5: 30530a8e15d411a18b581fffd87bcbbf.dir
-      size: 809549
+      md5: 854c791d9e94bef7a41c4824d34d3422.dir
+      size: 810616
       nfiles: 1
     - path: config/config.yaml
       hash: md5
-      md5: 8a9f485efb0f3ea3045deda4eca704db
-      size: 2664
+      md5: 29ed721350a6f946be53f07f330b2e9e
+      size: 3751
     - path: params.yaml
       hash: md5
-      md5: a65da601cf93557c269a660fce424d43
-      size: 1061
+      md5: 6cca5e21b4d6f2c602bae61dda0b5921
+      size: 1132
     - path: src/gaspriceforecast/components/lstm_model.py
       hash: md5
-      md5: 186cc2eac8268ac583226e49f7b09c92
-      size: 6193
+      md5: 1d3f4c93cd156660ca5580710c34c78f
+      size: 6948
     - path: src/gaspriceforecast/pipeline/stage_03_lstm_model.py
       hash: md5
       md5: cad191003df4b40ae9681f3347bb43e1
@@ -104,29 +104,29 @@ stages:
     outs:
     - path: artifacts/lstm_model
       hash: md5
-      md5: a680b10db22df593cefccc82153bd299.dir
-      size: 1024239
+      md5: 9b61ddd5d5ba0c56d4b228619f36eeb4.dir
+      size: 1024443
       nfiles: 6
   bilstm_model:
     cmd: python src/gaspriceforecast/pipeline/stage_04_bilstm_model.py
     deps:
     - path: artifacts/prepare_data
       hash: md5
-      md5: 30530a8e15d411a18b581fffd87bcbbf.dir
-      size: 809549
+      md5: 854c791d9e94bef7a41c4824d34d3422.dir
+      size: 810616
       nfiles: 1
     - path: config/config.yaml
       hash: md5
-      md5: 8a9f485efb0f3ea3045deda4eca704db
-      size: 2664
+      md5: 29ed721350a6f946be53f07f330b2e9e
+      size: 3751
     - path: params.yaml
       hash: md5
-      md5: a65da601cf93557c269a660fce424d43
-      size: 1061
+      md5: 6cca5e21b4d6f2c602bae61dda0b5921
+      size: 1132
     - path: src/gaspriceforecast/components/bilstm_model.py
       hash: md5
-      md5: 3e59ffb9e29c39a9637f6f4256500e22
-      size: 6054
+      md5: f0b0be33878b61b3f1b561d91ae8af54
+      size: 6811
     - path: src/gaspriceforecast/pipeline/stage_04_bilstm_model.py
       hash: md5
       md5: dee1b1ddb0a8ac601b04ac548a5a3462
@@ -134,32 +134,32 @@ stages:
     outs:
     - path: artifacts/bilstm_model
       hash: md5
-      md5: 21a7c30c654b1a5e933fc962749af87b.dir
-      size: 1905624
+      md5: f8764434337850880a62abf6bb0a0ddf.dir
+      size: 1909742
       nfiles: 6
   model_evaluation:
     cmd: python src/gaspriceforecast/pipeline/stage_05_model_evaluation.py
     deps:
     - path: artifacts/bilstm_model/metrics.json
       hash: md5
-      md5: 0a6673d07312f6a604f8f60c913da7fe
+      md5: e9eed7ef9ad0277ec972949f1725128f
       size: 98
     - path: artifacts/lstm_model/metrics.json
       hash: md5
-      md5: 3ab7a895f87a804a761d50bad36f17c4
-      size: 98
+      md5: f5c7778f21d4b5baa94623dd63fb6b5b
+      size: 99
     - path: artifacts/prophet_baseline/prophet_metrics.json
       hash: md5
-      md5: 812454e2cb33d413735317081806853a
-      size: 98
+      md5: 209125357433b69972170805d918b1b5
+      size: 97
     - path: config/config.yaml
       hash: md5
-      md5: 8a9f485efb0f3ea3045deda4eca704db
-      size: 2664
+      md5: 29ed721350a6f946be53f07f330b2e9e
+      size: 3751
     - path: src/gaspriceforecast/components/mlflow_model_evaluation.py
       hash: md5
-      md5: d84eb15303934f8e3015c184e2061a70
-      size: 4967
+      md5: d464f4e39861f357f360329e6dcea938
+      size: 10290
     - path: src/gaspriceforecast/pipeline/stage_05_model_evaluation.py
       hash: md5
       md5: b8c83e8eac9b4f9bd130fe1946f14071
@@ -167,28 +167,28 @@ stages:
     outs:
     - path: artifacts/model_evaluation
       hash: md5
-      md5: 2f465f93726701abaf2671caea4ec8b3.dir
-      size: 22337
+      md5: f9c0637ba649ab86983e461a689791f4.dir
+      size: 21819
       nfiles: 2
   future_feature_engineering:
     cmd: python src/gaspriceforecast/pipeline/stage_06_future_feature_engineering.py
     deps:
     - path: artifacts/prepare_data/processed_data.csv
       hash: md5
-      md5: c79d020322db7b71dd38904961cd6b7d
-      size: 809549
+      md5: 5317f99b8f813bf9b64af08cbd4df50a
+      size: 810616
     - path: config/config.yaml
       hash: md5
-      md5: 8a9f485efb0f3ea3045deda4eca704db
-      size: 2664
+      md5: 29ed721350a6f946be53f07f330b2e9e
+      size: 3751
     - path: params.yaml
       hash: md5
-      md5: a65da601cf93557c269a660fce424d43
-      size: 1061
+      md5: 6cca5e21b4d6f2c602bae61dda0b5921
+      size: 1132
     - path: src/gaspriceforecast/components/future_feature_engineering.py
       hash: md5
-      md5: 605090942cf06f5227749ae9aa04e6af
-      size: 5651
+      md5: c361db6496bb600017a71e4f240a8039
+      size: 6672
     - path: src/gaspriceforecast/pipeline/stage_06_future_feature_engineering.py
       hash: md5
       md5: 345fc64ada8b554fe36579954e60ee3e
@@ -196,5 +196,101 @@ stages:
     outs:
     - path: artifacts/future_feature_engineering/future_features.csv
       hash: md5
-      md5: 09e1ce4bc715325a63dea6ef00d1e5d8
-      size: 6683
+      md5: 84819d3c51dd9b15dfd3eb817addf3f6
+      size: 6817
+  forecast_with_lstm:
+    cmd: python src/gaspriceforecast/pipeline/stage_07_forecast_with_lstm.py
+    deps:
+    - path: artifacts/future_feature_engineering/future_features.csv
+      hash: md5
+      md5: 84819d3c51dd9b15dfd3eb817addf3f6
+      size: 6817
+    - path: artifacts/future_feature_engineering/last_known.csv
+      hash: md5
+      md5: 5f5680d6473264284dbcef17214c44a3
+      size: 10850
+    - path: artifacts/lstm_model/lstm_model.h5
+      hash: md5
+      md5: 2d3f9216877a1aaba7cf2e7837b4f7ec
+      size: 892864
+    - path: artifacts/lstm_model/scaler.pkl
+      hash: md5
+      md5: 8788ec6f4f226104c37ae77a6beb3b90
+      size: 927
+    - path: artifacts/lstm_model/scaler_feature.pkl
+      hash: md5
+      md5: 24b42f1ba7f71141c3dfc3b973374a04
+      size: 1447
+    - path: config/config.yaml
+      hash: md5
+      md5: 29ed721350a6f946be53f07f330b2e9e
+      size: 3751
+    - path: params.yaml
+      hash: md5
+      md5: 6cca5e21b4d6f2c602bae61dda0b5921
+      size: 1132
+    - path: src/gaspriceforecast/components/forecast_with_lstm.py
+      hash: md5
+      md5: 84c79fa81891113f4c30b7fe91cca4d3
+      size: 3699
+    - path: src/gaspriceforecast/pipeline/stage_07_forecast_with_lstm.py
+      hash: md5
+      md5: 9c5ad44500ae453ac840e5ecfffbc758
+      size: 910
+    outs:
+    - path: artifacts/forecast_with_lstm/forecast_plot.png
+      hash: md5
+      md5: f2b2b6e7df4d03a25c8e4003f4e6fe6a
+      size: 79443
+    - path: artifacts/forecast_with_lstm/forecasted_prices.csv
+      hash: md5
+      md5: c4d8b14f4eef08424c38b96fc3081f75
+      size: 647
+  forecast_with_bilstm:
+    cmd: python src/gaspriceforecast/pipeline/stage_08_forecast_with_bilstm.py
+    deps:
+    - path: artifacts/bilstm_model/bilstm_model.h5
+      hash: md5
+      md5: 5f49deff1df00b8028ae8266ad585406
+      size: 1772368
+    - path: artifacts/bilstm_model/scaler.pkl
+      hash: md5
+      md5: 8788ec6f4f226104c37ae77a6beb3b90
+      size: 927
+    - path: artifacts/bilstm_model/scaler_feature.pkl
+      hash: md5
+      md5: 24b42f1ba7f71141c3dfc3b973374a04
+      size: 1447
+    - path: artifacts/future_feature_engineering/future_features.csv
+      hash: md5
+      md5: 84819d3c51dd9b15dfd3eb817addf3f6
+      size: 6817
+    - path: artifacts/future_feature_engineering/last_known.csv
+      hash: md5
+      md5: 5f5680d6473264284dbcef17214c44a3
+      size: 10850
+    - path: config/config.yaml
+      hash: md5
+      md5: 29ed721350a6f946be53f07f330b2e9e
+      size: 3751
+    - path: params.yaml
+      hash: md5
+      md5: 6cca5e21b4d6f2c602bae61dda0b5921
+      size: 1132
+    - path: src/gaspriceforecast/components/forecast_with_bilstm.py
+      hash: md5
+      md5: c4fe071d09b0a19f7e961aa0c1b4eda6
+      size: 3711
+    - path: src/gaspriceforecast/pipeline/stage_08_forecast_with_bilstm.py
+      hash: md5
+      md5: 59b8da5fd64da9c46439d99b4ba47d0d
+      size: 926
+    outs:
+    - path: artifacts/forecast_with_bilstm/forecast_plot.png
+      hash: md5
+      md5: a653ec7361ae09d00d1f258fb67e6794
+      size: 80335
+    - path: artifacts/forecast_with_bilstm/forecasted_prices.csv
+      hash: md5
+      md5: 73a393bc2b35390c20db98ee27eb33e2
+      size: 636

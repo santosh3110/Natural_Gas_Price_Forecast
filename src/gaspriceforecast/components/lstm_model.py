@@ -5,14 +5,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
-
+import mlflow
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dropout, Dense
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 from sklearn.model_selection import train_test_split
-
+import dagshub
 from gaspriceforecast.entity.config_entity import LSTMConfig
 from gaspriceforecast.utils.logger import get_logger
 
@@ -109,54 +109,69 @@ class LSTMTrainer:
         early_stop = EarlyStopping(monitor="val_loss", patience=self.config.params["patience"], restore_best_weights=True)
         reduce_lr = ReduceLROnPlateau(monitor="val_loss", factor=0.3, patience=10, min_lr=1e-6)
 
-        history = model.fit(
-            X_train_seq, y_train_seq,
-            validation_data=(X_test_seq, y_test_seq),
-            epochs=self.config.params["epochs"],
-            batch_size=self.config.params["batch_size"],
-            callbacks=[early_stop, reduce_lr],
-            verbose=1
+        dagshub.init(
+        repo_owner="santoshkumarguntupalli",
+        repo_name="Natural_Gas_Price_Forecast",
+        mlflow=True
         )
 
-        logger.info("Saving model...")
-        model.save(self.config.model_path)
+        with mlflow.start_run(run_name="LSTM_Model"):
+            history = model.fit(
+                X_train_seq, y_train_seq,
+                validation_data=(X_test_seq, y_test_seq),
+                epochs=self.config.params["epochs"],
+                batch_size=self.config.params["batch_size"],
+                callbacks=[early_stop, reduce_lr],
+                verbose=1
+            )
 
-        # Plot training history
-        plt.plot(history.history["loss"], label="Train Loss")
-        plt.plot(history.history["val_loss"], label="Val Loss")
-        plt.legend()
-        plt.title("LSTM Loss Curve")
-        plt.savefig(self.config.history_plot)
-        plt.close()
-        logger.info(f"Loss plot saved at: {self.config.history_plot}")
+            logger.info("Saving model...")
+            model.save(self.config.model_path)
+            mlflow.keras.log_model(model, "model")
 
-        # Predict and evaluate
-        y_pred = model.predict(X_test_seq)
-        y_pred_inv = target_scaler.inverse_transform(y_pred)
-        y_test_inv = target_scaler.inverse_transform(y_test_seq)
+            # Plot training history
+            plt.plot(history.history["loss"], label="Train Loss")
+            plt.plot(history.history["val_loss"], label="Val Loss")
+            plt.legend()
+            plt.title("LSTM Loss Curve")
+            plt.savefig(self.config.history_plot)
+            plt.close()
+            logger.info(f"Loss plot saved at: {self.config.history_plot}")
+            mlflow.log_artifact(self.config.history_plot)
 
-        # Forecast plot
-        plt.figure(figsize=(14, 6))
-        plt.plot(y_test_inv, label="Actual")
-        plt.plot(y_pred_inv, label="Predicted")
-        plt.title("LSTM Forecast vs Actual")
-        plt.legend()
-        plt.grid(True)
-        plt.tight_layout()
-        plt.savefig(self.config.prediction_plot)
-        plt.close()
-        logger.info(f"Prediction plot saved at: {self.config.prediction_plot}")
+            # Predict and evaluate
+            y_pred = model.predict(X_test_seq)
+            y_pred_inv = target_scaler.inverse_transform(y_pred)
+            y_test_inv = target_scaler.inverse_transform(y_test_seq)
 
-        # Evaluation
-        rmse = float(np.sqrt(mean_squared_error(y_test_inv, y_pred_inv)))
-        mae = float(mean_absolute_error(y_test_inv, y_pred_inv))
-        mape = float(mean_absolute_percentage_error(y_test_inv, y_pred_inv))
+            # Forecast plot
+            plt.figure(figsize=(14, 6))
+            plt.plot(y_test_inv, label="Actual")
+            plt.plot(y_pred_inv, label="Predicted")
+            plt.title("LSTM Forecast vs Actual")
+            plt.legend()
+            plt.grid(True)
+            plt.tight_layout()
+            plt.savefig(self.config.prediction_plot)
+            plt.close()
+            logger.info(f"Prediction plot saved at: {self.config.prediction_plot}")
+            mlflow.log_artifact(self.config.prediction_plot)
 
-        metrics = {"RMSE": rmse, "MAE": mae, "MAPE": mape}
-        with open(self.config.metrics_file, "w") as f:
-            json.dump(metrics, f, indent=4)
-        logger.info(f"LSTM Metrics: {metrics}")
-        logger.info(f"Metrics saved at: {self.config.metrics_file}")
+            # Evaluation
+            rmse = float(np.sqrt(mean_squared_error(y_test_inv, y_pred_inv)))
+            mae = float(mean_absolute_error(y_test_inv, y_pred_inv))
+            mape = float(mean_absolute_percentage_error(y_test_inv, y_pred_inv))
+
+            metrics = {"RMSE": rmse, "MAE": mae, "MAPE": mape}
+            with open(self.config.metrics_file, "w") as f:
+                json.dump(metrics, f, indent=4)
+            logger.info(f"LSTM Metrics: {metrics}")
+            logger.info(f"Metrics saved at: {self.config.metrics_file}")
+            mlflow.log_metrics(metrics)
+            mlflow.log_artifact(self.config.metrics_file)
+
+            for k, v in self.config.params.items():
+                mlflow.log_param(k, v)
 
     def run(self):
         self.train()

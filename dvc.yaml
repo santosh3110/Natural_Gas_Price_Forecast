@@ -73,3 +73,36 @@ stages:
       - artifacts/prepare_data/processed_data.csv
     outs:
       - artifacts/future_feature_engineering/future_features.csv
+
+  forecast_with_lstm:
+    cmd: python src/gaspriceforecast/pipeline/stage_07_forecast_with_lstm.py
+    deps:
+      - src/gaspriceforecast/pipeline/stage_07_forecast_with_lstm.py
+      - src/gaspriceforecast/components/forecast_with_lstm.py
+      - config/config.yaml
+      - params.yaml
+      - artifacts/future_feature_engineering/future_features.csv
+      - artifacts/lstm_model/lstm_model.h5
+      - artifacts/lstm_model/scaler.pkl
+      - artifacts/lstm_model/scaler_feature.pkl
+      - artifacts/future_feature_engineering/last_known.csv
+    outs:
+      - artifacts/forecast_with_lstm/forecast_plot.png
+      - artifacts/forecast_with_lstm/forecasted_prices.csv
+
+  forecast_with_bilstm:
+    cmd: python src/gaspriceforecast/pipeline/stage_08_forecast_with_bilstm.py
+    deps:
+      - src/gaspriceforecast/pipeline/stage_08_forecast_with_bilstm.py
+      - src/gaspriceforecast/components/forecast_with_bilstm.py
+      - config/config.yaml
+      - params.yaml
+      - artifacts/future_feature_engineering/future_features.csv
+      - artifacts/bilstm_model/bilstm_model.h5
+      - artifacts/bilstm_model/scaler.pkl
+      - artifacts/bilstm_model/scaler_feature.pkl
+      - artifacts/future_feature_engineering/last_known.csv
+    outs:
+      - artifacts/forecast_with_bilstm/forecast_plot.png
+      - artifacts/forecast_with_bilstm/forecasted_prices.csv
+

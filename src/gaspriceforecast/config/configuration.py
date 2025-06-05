@@ -3,7 +3,8 @@ from gaspriceforecast.utils.common import read_yaml, create_directories
 from gaspriceforecast.entity.config_entity import (
     DataIngestionConfig, PrepareDataConfig,
     ProphetBaselineConfig, LSTMConfig, BiLSTMConfig,
-    LoggingConfig, ModelEvaluationConfig, FutureFeatureEngineeringConfig
+    LoggingConfig, ModelEvaluationConfig, FutureFeatureEngineeringConfig,
+    ForecastWithLSTMConfig, ForecastWithBiLSTMConfig
 )
 from pathlib import Path
 
@@ -134,10 +135,106 @@ class ConfigurationManager:
         return FutureFeatureEngineeringConfig(
             root_dir=config.root_dir,
             processed_data_path=config.processed_data_path,
+            last_known_data_path=config.last_known_data_path,
             output_path=config.output_path,
             params=params
         )
+    
+    def get_forecast_with_lstm_config(self) -> ForecastWithLSTMConfig:
+        config = self.config.forecast_with_lstm
+        params = self.params.forecast_lstm
 
+        feature_order = [
+            "Close",
+            "Technical_Strength",
+            "Technical_Strength_Signal",
+            "Inventory_Bcf",
+            "Hist_Vol",
+            "Inventory_Bcf_lag3",
+            "Hdd_ma30",
+            "Inventory_ma30",
+            "Hdd_cumsum",
+            "Inventory_cumsum",
+            "Volume_ma30",
+            "Volume_cumsum"
+        ]
+
+        feature_dtypes = {
+            "Close": "float32",
+            "Technical_Strength": "float32",
+            "Technical_Strength_Signal": "float32",
+            "Inventory_Bcf": "float32",
+            "Hist_Vol": "float32",
+            "Inventory_Bcf_lag3": "float32",
+            "Hdd_ma30": "float32",
+            "Inventory_ma30": "float32",
+            "Hdd_cumsum": "float64",
+            "Inventory_cumsum": "float64",
+            "Volume_ma30": "float32",
+            "Volume_cumsum": "float64"
+        }
+
+        return ForecastWithLSTMConfig(
+            model_path=Path(config.model_path),
+            feature_scaler_path=Path(config.feature_scaler_path),
+            target_scaler_path=Path(config.target_scaler_path),
+            future_feature_path=Path(config.future_feature_path),
+            last_known_data_path=Path(config.last_known_data_path),
+            processed_data_path=Path(config.processed_data_path),
+            forecast_plot_path=Path(config.forecast_plot_path),
+            output_forecast_path=Path(config.output_forecast_path),
+            time_step=params.time_step,
+            feature_order=feature_order,
+            feature_dtypes=feature_dtypes
+        )
+    def get_forecast_with_bilstm_config(self) -> ForecastWithBiLSTMConfig:
+        config = self.config.forecast_with_bilstm
+        params = self.params.forecast_bilstm
+
+        feature_order = [
+            "Close",
+            "Technical_Strength",
+            "Technical_Strength_Signal",
+            "Inventory_Bcf",
+            "Hist_Vol",
+            "Inventory_Bcf_lag3",
+            "Hdd_ma30",
+            "Inventory_ma30",
+            "Hdd_cumsum",
+            "Inventory_cumsum",
+            "Volume_ma30",
+            "Volume_cumsum"
+        ]
+
+        feature_dtypes = {
+            "Close": "float32",
+            "Technical_Strength": "float32",
+            "Technical_Strength_Signal": "float32",
+            "Inventory_Bcf": "float32",
+            "Hist_Vol": "float32",
+            "Inventory_Bcf_lag3": "float32",
+            "Hdd_ma30": "float32",
+            "Inventory_ma30": "float32",
+            "Hdd_cumsum": "float64",
+            "Inventory_cumsum": "float64",
+            "Volume_ma30": "float32",
+            "Volume_cumsum": "float64"
+        }
+
+        return ForecastWithBiLSTMConfig(
+            model_path=Path(config.model_path),
+            feature_scaler_path=Path(config.feature_scaler_path),
+            target_scaler_path=Path(config.target_scaler_path),
+            future_feature_path=Path(config.future_feature_path),
+            last_known_data_path=Path(config.last_known_data_path),
+            processed_data_path=Path(config.processed_data_path),
+            forecast_plot_path=Path(config.forecast_plot_path),
+            output_forecast_path=Path(config.output_forecast_path),
+            time_step=params.time_step,
+            feature_order=feature_order,
+            feature_dtypes=feature_dtypes
+        )
+    
     def get_logging_config(self) -> LoggingConfig:
         config = self.config.logging
         return LoggingConfig(

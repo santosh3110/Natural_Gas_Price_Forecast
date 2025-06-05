@@ -84,8 +84,37 @@ class ModelEvaluationConfig:
 class FutureFeatureEngineeringConfig:
     root_dir: Path
     processed_data_path: Path
+    last_known_data_path: Path
     output_path: Path
     params: dict
+
+@dataclass
+class ForecastWithLSTMConfig:
+    model_path: Path
+    feature_scaler_path: Path
+    target_scaler_path: Path
+    future_feature_path: Path
+    last_known_data_path: Path
+    processed_data_path: Path
+    forecast_plot_path: Path
+    output_forecast_path: Path
+    time_step: int
+    feature_order: list
+    feature_dtypes: dict
+
+@dataclass
+class ForecastWithBiLSTMConfig:
+    model_path: Path
+    feature_scaler_path: Path
+    target_scaler_path: Path
+    future_feature_path: Path
+    last_known_data_path: Path
+    processed_data_path: Path
+    forecast_plot_path: Path
+    output_forecast_path: Path
+    time_step: int
+    feature_order: list
+    feature_dtypes: dict
 
 @dataclass
 class LoggingConfig:

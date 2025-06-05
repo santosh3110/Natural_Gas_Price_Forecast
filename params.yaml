@@ -24,8 +24,8 @@ lstm:
 BiLSTM_model:
   layers: 1
   units: 128
-  dropout: 0.474381420780048
-  learning_rate: 0.005563285496088541
+  dropout: 0.23987231202752668
+  learning_rate: 0.005335757683054446
   batch_size: 32
   epochs: 300
   time_step: 60
@@ -40,8 +40,8 @@ future_feature_engineering:
 
   prophet_params:
     seasonality_mode: "multiplicative"
-    daily_seasonality: true
-    weekly_seasonality: true
+    daily_seasonality: false
+    weekly_seasonality: false
     yearly_seasonality: true
     changepoint_prior_scale: 0.2
     changepoint_range: 0.95
@@ -52,3 +52,10 @@ future_feature_engineering:
     p: 1
     q: 1
     dist: "ged"
+
+forecast_lstm:
+  time_step: 60
+
+forecast_bilstm:
+  time_step: 60
+

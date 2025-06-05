@@ -15,6 +15,7 @@ class FutureFeatureEngineer:
         self.params = config.params
 
     def simulate_with_prophet(self, df, col_name):
+        """Simulate future values using Facebook Prophet"""
         df = df[['Date', col_name]].dropna().rename(columns={"Date": "ds", col_name: "y"})
         p_params = self.params["prophet_params"]
 
@@ -40,6 +41,7 @@ class FutureFeatureEngineer:
         return forecast[["ds", "yhat"]].tail(self.params["forecast_horizon"]).set_index("ds")["yhat"]
 
     def simulate_volatility_with_garch(self, df: pd.DataFrame):
+        """Simulate future volatility using GARCH model"""
         series = df[['Date', 'Return']].dropna()
         series['Return'] = series['Return'] * 100
         series.set_index("Date", inplace=True)
@@ -66,16 +68,17 @@ class FutureFeatureEngineer:
         return pd.Series(
             predictions,
             index=future_index
-            )
+        )
 
     def run(self):
         logger.info("Starting future feature engineering...")
-
+        
+        # Read processed data
         df = pd.read_csv(self.config.processed_data_path, parse_dates=["Date"])
         df_model = df.copy()
         horizon = self.params["forecast_horizon"]
 
-        # Prophet Forecasts
+        # Simulate future features
         future_strength = self.simulate_with_prophet(df, "Technical_Strength")
         future_bcf = self.simulate_with_prophet(df, "Inventory_Bcf")
         future_hdd = self.simulate_with_prophet(df, "Hdd")
@@ -84,39 +87,62 @@ class FutureFeatureEngineer:
 
         future_dates = future_strength.index
         last_known = df_model.iloc[-60:].copy()
+        feature_order = ['Date','Close', 'Technical_Strength', 'Technical_Strength_Signal', 
+                'Inventory_Bcf', 'Hist_Vol', 'Inventory_Bcf_lag3', 
+                'Hdd_ma30', 'Inventory_ma30', 'Hdd_cumsum', 
+                'Inventory_cumsum', 'Volume_ma30', 'Volume_cumsum']
+        last_known = last_known[feature_order]
+        last_known.to_csv(self.config.last_known_data_path, index=False)
+        logger.info(f"Saved last known data to {self.config.last_known_data_path}")
 
         # Feature Engineering
-        signal = pd.concat([df["Technical_Strength"].iloc[-self.params["rolling_signal_window"]:], future_strength])
-        future_signal = signal.rolling(self.params["rolling_signal_window"]).mean().loc[future_dates]
+        signal_window = self.params["rolling_signal_window"]
 
-        # Inventory
-        full_bcf = pd.concat([df["Inventory_Bcf"].iloc[-40:], future_bcf])
+        # Technical Strength Signal
+        signal = pd.concat([
+            df["Technical_Strength"].iloc[-signal_window:],  # Last known
+            future_strength  # Simulated
+        ])
+        future_signal = signal.rolling(signal_window).mean().loc[future_dates]
+
+        # Inventory Feature Engineering
+        inv_window = self.params["lag_inventory"]
+        inv_bcf = pd.concat([
+            df["Inventory_Bcf"].iloc[-40:],  # Last known
+            future_bcf  # Simulated
+        ])
         inv_cumsum_last = df_model["Inventory_cumsum"].iloc[-1]
-        future_inventory_lag3 = full_bcf.shift(self.params["lag_inventory"]).loc[future_dates]
-        future_inventory_cumsum = full_bcf.cumsum().loc[future_dates] + inv_cumsum_last
-        future_inventory_ma30 = full_bcf.rolling(self.params["rolling_window"]).mean().loc[future_dates]
+        future_inventory_lag3 = inv_bcf.shift(inv_window).loc[future_dates]
+        future_inventory_cumsum = inv_bcf.cumsum().loc[future_dates] + inv_cumsum_last
+        future_inventory_ma30 = inv_bcf.rolling(self.params["rolling_window"]).mean().loc[future_dates]
 
-        # HDD
-        full_hdd = pd.concat([df["Hdd"].iloc[-40:], future_hdd])
+        # HDD Feature Engineering
+        hdd = pd.concat([
+            df["Hdd"].iloc[-40:],  # Last known
+            future_hdd  # Simulated
+        ])
         hdd_cumsum_last = df_model["Hdd_cumsum"].iloc[-1]
-        future_hdd_cumsum = full_hdd.cumsum().loc[future_dates] + hdd_cumsum_last
-        future_hdd_ma30 = full_hdd.rolling(self.params["rolling_window"]).mean().loc[future_dates]
+        future_hdd_cumsum = hdd.cumsum().loc[future_dates] + hdd_cumsum_last
+        future_hdd_ma30 = hdd.rolling(self.params["rolling_window"]).mean().loc[future_dates]
 
-        # Volume
-        full_vol = pd.concat([df["Volume"].iloc[-40:], future_volume])
+        # Volume Feature Engineering
+        vol = pd.concat([
+            df["Volume"].iloc[-40:],  # Last known
+            future_volume  # Simulated
+        ])
         vol_cumsum_last = df_model["Volume_cumsum"].iloc[-1]
-        future_volume_cumsum = full_vol.cumsum().loc[future_dates] + vol_cumsum_last
-        future_volume_ma30 = full_vol.rolling(self.params["rolling_window"]).mean().loc[future_dates]
+        future_volume_cumsum = vol.cumsum().loc[future_dates] + vol_cumsum_last
+        future_volume_ma30 = vol.rolling(self.params["rolling_window"]).mean().loc[future_dates]
 
-        # Final DF
+        # Create final DataFrame
         logger.info("Creating engineered feature DataFrame...")
         future_df = pd.DataFrame({
             "Date": future_dates,
             "Close": 0,  # Placeholder
             "Technical_Strength": future_strength.values,
             "Technical_Strength_Signal": future_signal.values,
-            "Hist_Vol": future_volatility.values,
             "Inventory_Bcf": future_bcf.values,
+            "Hist_Vol": future_volatility.values,
             "Inventory_Bcf_lag3": future_inventory_lag3.values,
             "Hdd_ma30": future_hdd_ma30.values,
             "Inventory_ma30": future_inventory_ma30.values,
