@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import mlflow
+import random
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dropout, Dense
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
@@ -15,6 +16,14 @@ from sklearn.model_selection import train_test_split
 import dagshub
 from gaspriceforecast.entity.config_entity import LSTMConfig
 from gaspriceforecast.utils.logger import get_logger
+
+def set_seed(seed=42):
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    tf.random.set_seed(seed)
+
+set_seed(42)
 
 logger = get_logger("lstm_model.log")
 

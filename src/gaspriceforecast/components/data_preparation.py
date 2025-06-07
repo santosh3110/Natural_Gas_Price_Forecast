@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from pathlib import Path
 from gaspriceforecast.entity.config_entity import PrepareDataConfig
 from gaspriceforecast.utils.logger import get_logger
@@ -36,8 +37,8 @@ class PrepareData:
             df = pd.merge(df, inv_df, on="Date", how="left")
 
             logger.info("Creating return & historical volatility features...")
-            df["Return"] = df["Close"].pct_change()
-            df["Hist_Vol"] = df["Return"].rolling(window=252).std() * (252 ** 0.5)
+            df["Return"] = np.log(df['Close'] / df['Close'].shift(1))
+            df["Hist_Vol"] = df["Return"].rolling(window=252).std() * np.sqrt(252)
 
             logger.info("Interpolating missing values...")
             df["Inventory_Bcf"] = df["Inventory_Bcf"].interpolate(method='linear', limit_direction='both')

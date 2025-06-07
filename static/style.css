@@ -1,0 +1,21 @@
+body {
+    background-image: url('/static/bg.webp');
+    background-size: 100% 100%;
+    background-color: #000;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background-color: rgba(0, 0, 0, 0.65); /* Dark overlay for readability */
+    padding: 30px;
+    margin: 40px auto;
+    border-radius: 10px;
+    max-width: 85%;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+}

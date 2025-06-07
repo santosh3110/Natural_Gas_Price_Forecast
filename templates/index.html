@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>Natural Gas Forecast App</title>
+    <style>
+        h1 {
+            margin-top: 40px;
+            color: #f1f1f1;
+            text-shadow: 1px 1px 3px #000;
+        }
+        .nav-buttons {
+            margin-top: 60px;
+        }
+        .nav-buttons a {
+            display: inline-block;
+            margin: 20px;
+            padding: 15px 30px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .nav-buttons a:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            margin-top: 80px;
+            font-size: 13px;
+            color: #ccc;
+            text-shadow: 1px 1px 2px #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Natural Gas Price Forecast Dashboard</h1>
+
+        <div class="nav-buttons">
+            <a href="/page1">📊 GunSan Strength View</a>
+            <a href="/page2">📈 GARCH Volatility</a>
+            <a href="/page3">🔮 Price Forecast</a>
+        </div>
+
+        <footer>
+            Built with ❤️ by Santosh Guntupalli
+        </footer>
+    </div>
+</body>
+</html>

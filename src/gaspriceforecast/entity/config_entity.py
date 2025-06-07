@@ -86,6 +86,7 @@ class FutureFeatureEngineeringConfig:
     processed_data_path: Path
     last_known_data_path: Path
     output_path: Path
+    garch_plot_path: Path
     params: dict
 
 @dataclass

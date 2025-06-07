@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Forecast Comparison</title>
+</head>
+<body>
+    <h2 style="text-align:center">Forecast: LSTM vs BiLSTM</h2>
+    <div style="text-align:center">
+        <form method="get" action="/page3">
+            <label for="model">Select Model:</label>
+            <select name="model" onchange="this.form.submit()">
+                <option value="lstm" {% if model == 'lstm' %}selected{% endif %}>LSTM</option>
+                <option value="bilstm" {% if model == 'bilstm' %}selected{% endif %}>BiLSTM</option>
+            </select>
+        </form>
+    </div>
+    <br>
+    <div>{{ forecast_plot|safe }}</div>
+    <div style="text-align:center; margin-top: 20px;">
+        <a href="/download?model={{ model }}">📥 Download {{ model.upper() }} Forecast CSV</a>
+    </div>
+    <hr>
+    <a href="/page1">← Back to GunSan View</a>
+</body>
+</html>

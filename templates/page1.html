@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>GunSan Strength</title>
+</head>
+<body>
+    <h2 style="text-align:center">Close Price & GunSan Strength</h2>
+    <div>{{ gunsan_plot|safe }}</div>
+    <hr>
+    <a href="/page2">Go to GARCH Forecast →</a>
+</body>
+</html>

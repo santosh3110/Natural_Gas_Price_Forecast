@@ -5,7 +5,7 @@ data_ingestion:
   yahoo_finance:
     ticker: "NG=F"
     start_date: "2009-01-01"
-    end_date: "2025-06-04"
+    end_date: "2025-06-06"
     data_file: artifacts/data_ingestion/yahoo_data.csv
   eia_api:
     api_key: ${EIA_API_KEY}
@@ -62,6 +62,7 @@ future_feature_engineering:
   processed_data_path: artifacts/prepare_data/processed_data.csv
   last_known_data_path: artifacts/future_feature_engineering/last_known.csv
   output_path: artifacts/future_feature_engineering/future_features.csv
+  garch_plot_path: artifacts/future_feature_engineering/garch_forecast.html
 
 forecast_with_lstm:
   model_path: artifacts/lstm_model/lstm_model.h5

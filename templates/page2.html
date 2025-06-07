@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>GARCH Forecast</title>
+</head>
+<body>
+    <h1>📉 GARCH Volatility Forecast</h1>
+    <div>
+        {{ plot_html | safe }}
+    </div>
+    <br>
+    <a href="/">← Back</a>
+</body>
+</html>

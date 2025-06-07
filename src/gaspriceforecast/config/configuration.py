@@ -137,6 +137,7 @@ class ConfigurationManager:
             processed_data_path=config.processed_data_path,
             last_known_data_path=config.last_known_data_path,
             output_path=config.output_path,
+            garch_plot_path = config.garch_plot_path,
             params=params
         )
     
