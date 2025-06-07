@@ -38,7 +38,7 @@ class PrepareData:
 
             logger.info("Creating return & historical volatility features...")
             df["Return"] = np.log(df['Close'] / df['Close'].shift(1))
-            df["Hist_Vol"] = df["Return"].rolling(window=252).std() * np.sqrt(252)
+            df["Hist_Vol"] = df["Return"].rolling(window=30).std() * np.sqrt(252)
 
             logger.info("Interpolating missing values...")
             df["Inventory_Bcf"] = df["Inventory_Bcf"].interpolate(method='linear', limit_direction='both')

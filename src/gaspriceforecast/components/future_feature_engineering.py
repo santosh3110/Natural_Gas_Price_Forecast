@@ -20,6 +20,7 @@ class FutureFeatureEngineer:
         p_params = self.params["prophet_params"]
 
         model = Prophet(
+            growth=p_params["growth"],
             seasonality_mode=p_params["seasonality_mode"],
             daily_seasonality=p_params["daily_seasonality"],
             weekly_seasonality=p_params["weekly_seasonality"],
@@ -30,10 +31,13 @@ class FutureFeatureEngineer:
         model.add_seasonality("monthly", period=30.5, fourier_order=p_params["monthly_fourier_order"])
         model.fit(df)
 
-        future = model.make_future_dataframe(periods=self.params["forecast_horizon"])
-        forecast = model.predict(future)
+        # forecast
+        last_date = df["ds"].max()
+        future_dates = pd.bdate_range(start=last_date + pd.Timedelta(days=1), periods=self.params["forecast_horizon"])
+        future = pd.DataFrame({"ds": future_dates})
 
-        return forecast[["ds", "yhat"]].tail(self.params["forecast_horizon"]).set_index("ds")["yhat"]
+        forecast = model.predict(future)
+        return forecast.set_index("ds")["yhat"]
  
     def simulate_volatility_with_garch(self, df: pd.DataFrame):
         """Simulate future volatility using GARCH model"""
