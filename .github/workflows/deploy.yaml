@@ -16,29 +16,29 @@ jobs:
     name: Continuous Integration
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Lint Code
-        run: echo " Linting passed (placeholder)"
+      - name: Lint code
+        run: echo "✅ Linting passed (placeholder)"
 
-      - name: Run Unit Tests
-        run: echo " Unit tests passed (placeholder)"
+      - name: Run unit tests
+        run: echo "✅ Unit tests passed (placeholder)"
 
   build-and-push-ecr-image:
     name: Continuous Delivery
     needs: integration
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Utilities
+      - name: Install utilities
         run: |
           sudo apt-get update
           sudo apt-get install -y jq unzip
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -49,7 +49,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, Tag, and Push Docker Image to ECR
+      - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -60,15 +60,14 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-  deploy-to-ec2:
-    name: Continuous Deployment
+  Continuous-Deployment:
     needs: build-and-push-ecr-image
-    runs-on: self-hosted  
+    runs-on: self-hosted
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -76,22 +75,25 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Pull Latest Docker Image
+      - name: Pull latest Docker image
         run: |
           docker pull ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      - name: Run Docker Container
+      - name: Stop and remove existing container (if any)
         run: |
-          docker stop gasapp || true
-          docker rm gasapp || true
+          docker ps -q --filter "name=gasapp" | grep -q . && docker stop gasapp && docker rm -fv gasapp || echo "No existing container to stop"
+
+      - name: Run new Docker container
+        run: |
           docker run -d -p 80:5000 --name=gasapp \
             -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
             -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             -e AWS_REGION=${{ secrets.AWS_REGION }} \
             ${{ secrets.AWS_ECR_LOGIN_URI }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-      - name: Cleanup
+      - name: Clean up unused images and containers
         run: |
           docker system prune -f
