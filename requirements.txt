@@ -37,6 +37,8 @@ optuna
 optuna-integration
 
 # GunSan Strength (custom)
+vectorbt
+pandas-ta
 gunsan-strength==0.1.0
  
 pyYAML
