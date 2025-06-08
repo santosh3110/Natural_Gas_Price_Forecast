@@ -40,13 +40,13 @@ future_feature_engineering:
 
   prophet_params:
     growth: "linear"
-    seasonality_mode: "additive"
+    seasonality_mode: "multiplicative"
     daily_seasonality: false
-    weekly_seasonality: false
+    weekly_seasonality: true
     yearly_seasonality: true
-    changepoint_prior_scale: 0.2
+    changepoint_prior_scale: 0.05
     changepoint_range: 0.95
-    monthly_fourier_order: 5
+    monthly_fourier_order: 4
 
   garch_params:
     vol: "GARCH"

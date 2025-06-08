@@ -61,8 +61,8 @@ stages:
       size: 3827
     - path: params.yaml
       hash: md5
-      md5: e66d129d5750ff639ae68def802ddbe3
-      size: 1146
+      md5: 8e4f53ca16d05e30300641b289c98bc7
+      size: 1152
     - path: src/gaspriceforecast/components/prophet_baseline.py
       hash: md5
       md5: 5e1e445968b976f546968cc67288835c
@@ -74,7 +74,7 @@ stages:
     outs:
     - path: artifacts/prophet_baseline
       hash: md5
-      md5: 5a55100811d566a714f4026af15aa8c0.dir
+      md5: cfbbbfdebf0896540981870261f44590.dir
       size: 645390
       nfiles: 6
   lstm_model:
