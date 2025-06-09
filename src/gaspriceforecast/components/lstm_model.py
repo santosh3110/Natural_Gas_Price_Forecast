@@ -17,11 +17,16 @@ import dagshub
 from gaspriceforecast.entity.config_entity import LSTMConfig
 from gaspriceforecast.utils.logger import get_logger
 
+# Set all seeds for reproducibility
 def set_seed(seed=42):
     os.environ['PYTHONHASHSEED'] = str(seed)
     random.seed(seed)
     np.random.seed(seed)
     tf.random.set_seed(seed)
+    os.environ['TF_DETERMINISTIC_OPS'] = '1'
+    os.environ['OMP_NUM_THREADS'] = '1'
+    os.environ['TF_NUM_INTRAOP_THREADS'] = '1'
+    os.environ['TF_NUM_INTEROP_THREADS'] = '1'
 
 set_seed(42)
 
@@ -115,6 +120,8 @@ class LSTMTrainer:
         logger.info(f"Training LSTM model with shape {X_train_seq.shape}")
         model = self.build_model((X_train_seq.shape[1], X_train_seq.shape[2]), self.config.params)
 
+        set_seed(42)
+
         early_stop = EarlyStopping(monitor="val_loss", patience=self.config.params["patience"], restore_best_weights=True)
         reduce_lr = ReduceLROnPlateau(monitor="val_loss", factor=0.3, patience=10, min_lr=1e-6)
 
@@ -149,6 +156,7 @@ class LSTMTrainer:
             mlflow.log_artifact(self.config.history_plot)
 
             # Predict and evaluate
+            set_seed(42)
             y_pred = model.predict(X_test_seq)
             y_pred_inv = target_scaler.inverse_transform(y_pred)
             y_test_inv = target_scaler.inverse_transform(y_test_seq)

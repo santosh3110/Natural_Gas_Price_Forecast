@@ -14,18 +14,18 @@ lstm:
   time_step: 60
   epochs: 300
   batch_size: 32
-  learning_rate: 0.004236738510183372
+  learning_rate: 0.0023667112722830274
   layers: 1
   units: 128
-  dropout: 0.2937143644669184
+  dropout: 0.4254426654338886
   patience: 25
   test_size: 0.25
 
 BiLSTM_model:
   layers: 1
   units: 128
-  dropout: 0.23987231202752668
-  learning_rate: 0.005335757683054446
+  dropout: 0.3092473873825267
+  learning_rate: 0.004210195109857597
   batch_size: 32
   epochs: 300
   time_step: 60
@@ -42,11 +42,11 @@ future_feature_engineering:
     growth: "linear"
     seasonality_mode: "multiplicative"
     daily_seasonality: false
-    weekly_seasonality: true
+    weekly_seasonality: false
     yearly_seasonality: true
-    changepoint_prior_scale: 0.05
+    changepoint_prior_scale: 0.15
     changepoint_range: 0.95
-    monthly_fourier_order: 4
+    monthly_fourier_order: 5
 
   garch_params:
     vol: "GARCH"
