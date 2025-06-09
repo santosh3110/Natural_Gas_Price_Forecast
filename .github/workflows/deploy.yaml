@@ -84,7 +84,12 @@ jobs:
 
       - name: Stop and remove existing container (if any)
         run: |
-          docker ps -q --filter "name=gasapp" | grep -q . && docker stop gasapp && docker rm -fv gasapp || echo "No existing container to stop"
+          if [ "$(docker ps -a -q -f name=gasapp)" ]; then
+            echo "Removing existing gasapp container..."
+            docker rm -f gasapp
+          else
+            echo "No existing container to remove"
+          fi
 
       - name: Run new Docker container
         run: |
